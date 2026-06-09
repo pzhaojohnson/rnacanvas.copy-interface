@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "rootDir": "./src",
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationDir": "./dist/",
+    "declarationMap": true,
+    "module": "es6",
+    "target": "es2019",
+    "moduleResolution": "bundler"
+  }
+}
