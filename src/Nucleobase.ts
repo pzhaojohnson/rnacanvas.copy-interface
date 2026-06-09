@@ -1,3 +1,3 @@
 export interface Nucleobase {
-  readonly textContent: string;
+  readonly domNode: SVGTextElement;
 }

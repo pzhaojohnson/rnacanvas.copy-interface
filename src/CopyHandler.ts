@@ -27,7 +27,7 @@ export class CopyHandler {
     let selectedBasesArray = [...this.#targetApp.drawing.bases].filter(b => selectedBasesSet.has(b));
 
     // bases need to be sorted correctly
-    let selectedSubsequence = selectedBasesArray.map(b => b.textContent).join('');
+    let selectedSubsequence = selectedBasesArray.map(b => b.domNode.textContent).join('');
 
     event.clipboardData?.setData('text/plain', selectedSubsequence);
   }

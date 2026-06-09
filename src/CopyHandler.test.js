@@ -72,7 +72,9 @@ class NucleobaseMock {
   id = Math.random();
 
   constructor(textContent) {
-    this.textContent = textContent;
+    this.domNode = {
+      textContent,
+    };
   }
 }
 
