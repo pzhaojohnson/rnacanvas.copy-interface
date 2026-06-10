@@ -16,6 +16,8 @@ describe('`class CopyHandler`', () => {
     copyHandler.handle(event);
 
     expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(event.stopPropagation).not.toHaveBeenCalled();
+
     expect(event.clipboardData.setData).not.toHaveBeenCalled();
 
     // one base is selected
@@ -26,6 +28,8 @@ describe('`class CopyHandler`', () => {
     copyHandler.handle(event);
 
     expect(event.preventDefault).toHaveBeenCalledTimes(1);
+    expect(event.stopPropagation).toHaveBeenCalledTimes(1);
+
     expect(event.clipboardData.setData).toHaveBeenCalledTimes(1);
 
     expect(event.clipboardData.setData.mock.calls[0][0]).toBe('text/plain');
@@ -39,6 +43,8 @@ describe('`class CopyHandler`', () => {
     copyHandler.handle(event);
 
     expect(event.preventDefault).toHaveBeenCalledTimes(1);
+    expect(event.stopPropagation).toHaveBeenCalledTimes(1);
+
     expect(event.clipboardData.setData).toHaveBeenCalledTimes(1);
 
     // copy handler must sort selected bases to write correct sequence
@@ -54,6 +60,7 @@ describe('`class CopyHandler`', () => {
     expect(() => copyHandler.handle(event)).not.toThrow();
 
     expect(event.preventDefault).toHaveBeenCalledTimes(1);
+    expect(event.stopPropagation).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -80,6 +87,8 @@ class NucleobaseMock {
 
 class ClipboardEventMock {
   preventDefault = jest.fn();
+
+  stopPropagation = jest.fn();
 
   clipboardData = {
     setData: jest.fn(),

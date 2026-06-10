@@ -22,6 +22,7 @@ export class CopyHandler {
     }
 
     event.preventDefault();
+    event.stopPropagation();
 
     // the order of bases in this array will match that of the drawing
     let selectedBasesArray = [...this.#targetApp.drawing.bases].filter(b => selectedBasesSet.has(b));
