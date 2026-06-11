@@ -71,8 +71,8 @@ describe('`class CopyHandler`', () => {
 
     expect(event.clipboardData.setData).toHaveBeenCalledTimes(1);
 
-    // there is a collapsed native browser selection
-    window.getSelection = () => ({ isCollapsed: true });
+    // there is a collapsed native browser selection with no text content
+    window.getSelection = () => ({ isCollapsed: true, toString: () => '' });
 
     var event = new ClipboardEventMock();
 
@@ -85,8 +85,23 @@ describe('`class CopyHandler`', () => {
 
     expect(event.clipboardData.setData).toHaveBeenCalledTimes(1);
 
-    // there is a non-collapsed native browser selection
-    window.getSelection = () => ({ isCollapsed: false });
+    // there is a non-collapsed native browser selection with no text content
+    window.getSelection = () => ({ isCollapsed: false, toString: () => '' });
+
+    var event = new ClipboardEventMock();
+
+    expect([...targetApp.selectedBases].length).toBeGreaterThan(0);
+
+    copyHandler.handle(event);
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(event.stopPropagation).not.toHaveBeenCalled();
+
+    expect(event.clipboardData.setData).not.toHaveBeenCalled();
+
+    // there is a collapsed native browser selection with text content
+    // (a single space character, for instance, counts as text content)
+    window.getSelection = () => ({ isCollapsed: true, toString: () => ' ' });
 
     var event = new ClipboardEventMock();
 

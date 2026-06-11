@@ -17,8 +17,11 @@ export class CopyHandler {
     let selection = window.getSelection();
 
     // don't do anything if there is a native browser selection to be copied
-    if (selection && !selection.isCollapsed) {
-      return;
+    // (need to check both whether the selection is collapsed or has text content)
+    if (selection) {
+      if (!selection.isCollapsed || selection.toString()) {
+        return;
+      }
     }
 
     let selectedBasesSet = new Set(this.#targetApp.selectedBases);
