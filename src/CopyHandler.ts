@@ -14,6 +14,13 @@ export class CopyHandler {
    * Handles the input copy event.
    */
   handle(event: ClipboardEvent) {
+    let selection = window.getSelection();
+
+    // don't do anything if there is a native browser selection to be copied
+    if (selection && !selection.isCollapsed) {
+      return;
+    }
+
     let selectedBasesSet = new Set(this.#targetApp.selectedBases);
 
     // don't do anything if no bases are selected

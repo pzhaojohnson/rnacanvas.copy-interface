@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { CopyHandler } from './CopyHandler';
 
 describe('`class CopyHandler`', () => {
@@ -50,6 +54,52 @@ describe('`class CopyHandler`', () => {
     // copy handler must sort selected bases to write correct sequence
     expect(event.clipboardData.setData.mock.calls[0][0]).toBe('text/plain');
     expect(event.clipboardData.setData.mock.calls[0][1]).toBe('AUGCCUA');
+
+    targetApp.selectedBases = [targetApp.drawing.bases[0]];
+
+    // there is no native browser selection
+    window.getSelection = () => null;
+
+    var event = new ClipboardEventMock();
+
+    expect([...targetApp.selectedBases].length).toBeGreaterThan(0);
+
+    copyHandler.handle(event);
+
+    expect(event.preventDefault).toHaveBeenCalledTimes(1);
+    expect(event.stopPropagation).toHaveBeenCalledTimes(1);
+
+    expect(event.clipboardData.setData).toHaveBeenCalledTimes(1);
+
+    // there is a collapsed native browser selection
+    window.getSelection = () => ({ isCollapsed: true });
+
+    var event = new ClipboardEventMock();
+
+    expect([...targetApp.selectedBases].length).toBeGreaterThan(0);
+
+    copyHandler.handle(event);
+
+    expect(event.preventDefault).toHaveBeenCalledTimes(1);
+    expect(event.stopPropagation).toHaveBeenCalledTimes(1);
+
+    expect(event.clipboardData.setData).toHaveBeenCalledTimes(1);
+
+    // there is a non-collapsed native browser selection
+    window.getSelection = () => ({ isCollapsed: false });
+
+    var event = new ClipboardEventMock();
+
+    expect([...targetApp.selectedBases].length).toBeGreaterThan(0);
+
+    copyHandler.handle(event);
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(event.stopPropagation).not.toHaveBeenCalled();
+
+    expect(event.clipboardData.setData).not.toHaveBeenCalled();
+
+    window.getSelection = () => null;
 
     // copy event is missing clipboard data property
     var event = new ClipboardEventMock();
