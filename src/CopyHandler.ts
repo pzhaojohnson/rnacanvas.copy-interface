@@ -11,15 +11,15 @@ export class CopyHandler {
   }
 
   /**
-   * Handles the input copy event.
+   * Handles the input copy event (or writes to the window navigator clipboard when no copy event is provided).
    */
-  handle(event: ClipboardEvent) {
+  async handle(event?: ClipboardEvent) {
     let selection = window.getSelection();
 
     // don't do anything if there is a native browser selection to be copied
-    // (need to check both whether the selection is collapsed or has text content)
+    // (need to check both whether there is a text selection or if something like an image is selected)
     if (selection) {
-      if (!selection.isCollapsed || selection.toString()) {
+      if (selection.toString() || !selection.isCollapsed) {
         return;
       }
     }
@@ -31,8 +31,8 @@ export class CopyHandler {
       return;
     }
 
-    event.preventDefault();
-    event.stopPropagation();
+    event?.preventDefault();
+    event?.stopPropagation();
 
     // the order of bases in this array will match that of the drawing
     let selectedBasesArray = [...this.#targetApp.drawing.bases].filter(b => selectedBasesSet.has(b));
@@ -40,6 +40,10 @@ export class CopyHandler {
     // bases need to be sorted correctly
     let selectedSubsequence = selectedBasesArray.map(b => b.domNode.textContent).join('');
 
-    event.clipboardData?.setData('text/plain', selectedSubsequence);
+    if (event) {
+      event.clipboardData?.setData('text/plain', selectedSubsequence);
+    } else {
+      await navigator.clipboard.writeText(selectedSubsequence);
+    }
   }
 }

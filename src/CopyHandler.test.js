@@ -5,7 +5,7 @@
 import { CopyHandler } from './CopyHandler';
 
 describe('`class CopyHandler`', () => {
-  test('`handle()`', () => {
+  test('`handle()`', async () => {
     var targetApp = new AppMock();
 
     var copyHandler = new CopyHandler(targetApp);
@@ -17,7 +17,7 @@ describe('`class CopyHandler`', () => {
 
     var event = new ClipboardEventMock();
 
-    copyHandler.handle(event);
+    await copyHandler.handle(event);
 
     expect(event.preventDefault).not.toHaveBeenCalled();
     expect(event.stopPropagation).not.toHaveBeenCalled();
@@ -29,7 +29,7 @@ describe('`class CopyHandler`', () => {
 
     var event = new ClipboardEventMock();
 
-    copyHandler.handle(event);
+    await copyHandler.handle(event);
 
     expect(event.preventDefault).toHaveBeenCalledTimes(1);
     expect(event.stopPropagation).toHaveBeenCalledTimes(1);
@@ -44,7 +44,7 @@ describe('`class CopyHandler`', () => {
 
     var event = new ClipboardEventMock();
 
-    copyHandler.handle(event);
+    await copyHandler.handle(event);
 
     expect(event.preventDefault).toHaveBeenCalledTimes(1);
     expect(event.stopPropagation).toHaveBeenCalledTimes(1);
@@ -64,7 +64,7 @@ describe('`class CopyHandler`', () => {
 
     expect([...targetApp.selectedBases].length).toBeGreaterThan(0);
 
-    copyHandler.handle(event);
+    await copyHandler.handle(event);
 
     expect(event.preventDefault).toHaveBeenCalledTimes(1);
     expect(event.stopPropagation).toHaveBeenCalledTimes(1);
@@ -78,7 +78,7 @@ describe('`class CopyHandler`', () => {
 
     expect([...targetApp.selectedBases].length).toBeGreaterThan(0);
 
-    copyHandler.handle(event);
+    await copyHandler.handle(event);
 
     expect(event.preventDefault).toHaveBeenCalledTimes(1);
     expect(event.stopPropagation).toHaveBeenCalledTimes(1);
@@ -92,7 +92,7 @@ describe('`class CopyHandler`', () => {
 
     expect([...targetApp.selectedBases].length).toBeGreaterThan(0);
 
-    copyHandler.handle(event);
+    await copyHandler.handle(event);
 
     expect(event.preventDefault).not.toHaveBeenCalled();
     expect(event.stopPropagation).not.toHaveBeenCalled();
@@ -107,7 +107,7 @@ describe('`class CopyHandler`', () => {
 
     expect([...targetApp.selectedBases].length).toBeGreaterThan(0);
 
-    copyHandler.handle(event);
+    await copyHandler.handle(event);
 
     expect(event.preventDefault).not.toHaveBeenCalled();
     expect(event.stopPropagation).not.toHaveBeenCalled();
@@ -122,10 +122,23 @@ describe('`class CopyHandler`', () => {
 
     targetApp.selectedBases = [targetApp.drawing.bases[0]];
 
-    expect(() => copyHandler.handle(event)).not.toThrow();
+    expect(async () => await copyHandler.handle(event)).not.toThrow();
 
     expect(event.preventDefault).toHaveBeenCalledTimes(1);
     expect(event.stopPropagation).toHaveBeenCalledTimes(1);
+
+    window.getSelection = () => null;
+
+    targetApp.selectedBases = [1, 4, 10, 9, 2].map(i => targetApp.drawing.bases[i]);
+
+    navigator.clipboard = { writeText: jest.fn() };
+
+    // no copy event object is provided
+    expect(async () => await copyHandler.handle()).not.toThrow();
+
+    expect(window.navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+
+    expect(window.navigator.clipboard.writeText.mock.calls[0][0]).toBe('UGUAG');
   });
 });
 
