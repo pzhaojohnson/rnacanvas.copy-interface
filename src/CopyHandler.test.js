@@ -43,7 +43,7 @@ describe('`class CopyHandler`', () => {
 
     // app state is stored separately from the copied sequence
     expect(event.clipboardData.setData.mock.calls[1][0]).toBe('application/json');
-    expect(JSON.parse(event.clipboardData.setData.mock.calls[1][1])).toStrictEqual(targetApp.save());
+    expect(JSON.parse(event.clipboardData.setData.mock.calls[1][1])).toStrictEqual(targetApp.serialized());
 
     // multiple bases are selected (that are out of order)
     targetApp.selectedBases = [2, 8, 5, 1, 0, 3, 9].map(i => targetApp.drawing.bases[i]);
@@ -77,7 +77,7 @@ describe('`class CopyHandler`', () => {
     // only the app state is copied (no plain text sequence)
     expect(event.clipboardData.setData).toHaveBeenCalledTimes(1);
     expect(event.clipboardData.setData.mock.calls[0][0]).toBe('application/json');
-    expect(JSON.parse(event.clipboardData.setData.mock.calls[0][1])).toStrictEqual(targetApp.save());
+    expect(JSON.parse(event.clipboardData.setData.mock.calls[0][1])).toStrictEqual(targetApp.serialized());
 
     targetApp.selection.isEmpty = () => false;
 
@@ -188,7 +188,7 @@ class AppMock {
 
   selectedBases = [];
 
-  save() {
+  serialized() {
     return { drawing: { bases: JSON.stringify(this.drawing.bases) } };
   }
 }

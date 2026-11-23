@@ -50,6 +50,6 @@ export class CopyHandler {
 
     // store as "application/json" (so as to not overwrite any copied sequence)
     // (note that MIME types such as this aren't supported by `navigator.clipboard`)
-    event?.clipboardData?.setData('application/json', JSON.stringify(this.#targetApp.save()));
+    event?.clipboardData?.setData('application/json', JSON.stringify(this.#targetApp.serialized()));
   }
 }

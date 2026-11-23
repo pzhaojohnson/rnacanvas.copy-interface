@@ -22,9 +22,9 @@ export interface App {
   readonly selectedBases: Iterable<Nucleobase>;
 
   /**
-   * Returns the state of the app at the time the method is called.
+   * Returns the state of the app (in a JSON-serializable form) at the time this method is called.
    */
-  save(): AppState;
+  serialized(): AppState;
 
   /**
    * Restores the app to the previous state.
