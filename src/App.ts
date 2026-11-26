@@ -22,6 +22,13 @@ export interface App {
   readonly selectedBases: Iterable<Nucleobase>;
 
   /**
+   * Removes the selected elements from the drawing.
+   *
+   * (Also pushes the undo stack before doing so.)
+   */
+  removeSelected(): void;
+
+  /**
    * Returns the state of the app (in a JSON-serializable form) at the time this method is called.
    */
   serialized(): AppState;
